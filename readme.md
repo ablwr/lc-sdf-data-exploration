@@ -1,5 +1,7 @@
 # lc-sdf-data-exploration
 
+See the results live: [https://lc-sdf-data-exploration.fly.dev/](https://lc-sdf-data-exploration.fly.dev/)  
+
 ![screenshot of datasette dashboard](dashboard.jpg)
 
 ## Contents
