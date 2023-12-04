@@ -1,0 +1,5 @@
+/fddXML/*
+/xml/*
+/venv/*
+.dockerignore
+fly.toml

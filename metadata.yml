@@ -1,0 +1,249 @@
+title: Library of Congress FDD Datasette
+about: ablwr/lc-sdf-data-exploration
+about_url: https://github.com/ablwr/lc-sdf-data-exploration
+description_html: |-
+  <div class="message-info">
+    <p>Welcome to the (unofficial) Library of Congress FDD Datasette!</p>
+    <ul class="bullets">
+      <li>Browse dashboards at <a href="/-/dashboards">/-/dashboards</a></li>
+      <li>or play around with the data tables linked below</li>
+    </ul>
+    <p>by <a href="https://ashleyblewer.com">Ashley Blewer</a>, with <a href="https://github.com/ablwr/lc-sdf-data-exploration">source available</a>.
+  </div>
+  
+plugins:
+  datasette-dashboards:
+    fdd-dashboard:
+      title: FDD Dashboard
+      description: Visualizing some data
+      settings:
+        allow_fullscreen: true
+      layout:
+        - [description-count, category, draftStatus, gdfrGenre]
+        - [dates, dates, dates, keywords-cloud]
+        - [gdfrBasis, gdfrConstraint, gdfrForm, gdfrComposition]
+        - [superlative-most-citations, superlative-most-relationships, superlative-oldest, superlative-newest]
+        - [superlative-most-citations, superlative-most-relationships, superlative-oldest, superlative-newest]
+      # filters:
+      #  # not filtering at this time, maybe later
+      charts:
+        # analysis-note:
+        #   library: markdown
+        #   display: |-
+        #     # Analysis notes
+        #     > This field not currently in use
+
+        description-count:
+          title: Total number of FDDs
+          db: fdd_database
+          query: SELECT count(*) as count FROM main
+          library: metric
+          display:
+            field: count
+            prefix:
+            suffix:
+
+        category:
+          title: FDD Category
+          db: fdd_database
+          query: SELECT category, count(*) as count FROM main GROUP BY category ORDER BY count DESC
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: category, type: nominal }
+              theta: { field: count, type: quantitative }
+
+        draftStatus:
+          title: FDD Draft Status
+          db: fdd_database
+          query: SELECT draftStatus, count(*) as count FROM main GROUP BY draftStatus ORDER BY count DESC
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: draftStatus, type: nominal }
+              theta: { field: count, type: quantitative }
+
+        gdfrGenre:
+          title: Global Digital Format Registry - Genre
+          db: fdd_database
+          query: SELECT gdfrGenre, count(*) as count FROM main GROUP BY gdfrGenre ORDER BY count DESC
+          library: vega-lite
+          display:
+            mark: { type: arc, tooltip: true }
+            encoding:
+              color: { field: gdfrGenre, type: nominal }
+              theta: { field: count, type: quantitative }
+
+        gdfrComposition:
+          title: Global Digital Format Registry - Composition
+          db: fdd_database
+          query: SELECT gdfrComposition, count(*) as count FROM main GROUP BY gdfrComposition ORDER BY count DESC
+          library: vega-lite
+          display:
+            mark: { type: arc, tooltip: true }
+            encoding:
+              color: { field: gdfrComposition, type: nominal }
+              theta: { field: count, type: quantitative }
+
+        gdfrBasis:
+          title: Global Digital Format Registry - Basis
+          db: fdd_database
+          query: SELECT gdfrBasis, count(*) as count FROM main GROUP BY gdfrBasis ORDER BY count DESC
+          library: vega-lite
+          display:
+            mark: { type: arc, tooltip: true }
+            encoding:
+              color: { field: gdfrBasis, type: nominal }
+              theta: { field: count, type: quantitative }
+
+        gdfrForm:
+          title: Global Digital Format Registry - Form
+          db: fdd_database
+          query: SELECT gdfrForm, count(*) as count FROM main GROUP BY gdfrForm ORDER BY count DESC
+          library: vega-lite
+          display:
+            mark: { type: arc, tooltip: true }
+            encoding:
+              color: { field: gdfrForm, type: nominal }
+              theta: { field: count, type: quantitative }
+
+        gdfrConstraint:
+          title: Global Digital Format Registry - Constraint
+          db: fdd_database
+          query: SELECT gdfrConstraint, count(*) as count FROM main GROUP BY gdfrConstraint ORDER BY count DESC
+          library: vega-lite
+          display:
+            mark: { type: arc, tooltip: true }
+            encoding:
+              color: { field: gdfrConstraint, type: nominal }
+              theta: { field: count, type: quantitative }
+
+        dates:
+          title: FDDs last updated by year, per category
+          db: fdd_database
+          query: >-
+                SELECT strftime('%Y', date) as year, category as category, count(*) as count FROM main 
+                GROUP BY year, category ORDER BY year ASC
+          library: vega-lite
+          display:
+            mark: { type: bar, tooltip: true }
+            params:
+              - name: highlight
+                select: { fields: [category], type: point, "on": mouseover }
+                bind: legend
+            encoding:
+              x: { field: year, type: temporal, timeUnit: year }
+              y: { field: count, type: quantitative }
+              color: { field: category, type: nominal }
+              opacity:
+                condition: { param: highlight, value: 1 }
+                value: 0.2
+
+        keywords-cloud:
+          title: Word cloud of keywords
+          db: fdd_database
+          query: >-
+            SELECT
+              b.value AS word,
+              COUNT(*) AS frequency
+            FROM (
+                SELECT '["' || lower(replace(trim(keywords), ' ', '", "')) || '"]' AS array
+                FROM main
+                WHERE TRUE
+                  [[ AND date >= date(:date_start) ]]
+                  [[ AND date <= date(:date_end) ]]
+              ) a,
+              json_each(a.array) b
+            WHERE length(b.value) > 3
+            GROUP BY b.value
+            ORDER BY frequency DESC
+            LIMIT 100
+          library: vega
+          display:
+            height: 150
+            scales:
+              - name: color
+                type: ordinal
+                domain: { data: table, field: word }
+                range: ["#d5a928", "#652c90", "#939597"]
+            marks:
+              - type: text
+                from: { data: table }
+                encode:
+                  enter:
+                    text: { field: word }
+                    align: { value: center }
+                    baseline: { value: alphabetic }
+                    fill: { scale: color, field: "word" }
+                  update:
+                    fillOpacity: { value: 1 }
+                  hover:
+                    fillOpacity: { value: 0.5 }
+                transform:
+                  - type: wordcloud
+                    size: [{ signal: width }, { signal: height }]
+                    text: { field: word }
+                    rotate: 0
+                    font: Helvetica Neue, Arial
+                    fontSize: { field: datum.frequency }
+                    fontWeight: "300"
+                    fontSizeRange: [12, 56]
+                    padding: 2
+
+        superlative-most-citations:
+          title: Most citations
+          db: fdd_database
+          query: >-
+            SELECT
+              '<a href="https://www.loc.gov/preservation/digital/formats/fdd/' || m.id || '.shtml">' || m.titleName || '</a>' as FDD,
+              count(*) as count
+            FROM
+              citations c
+            INNER JOIN main m ON c.main_id = m.id WHERE m.id = c.main_id
+            GROUP BY
+              main_id
+            ORDER BY
+              count DESC
+            LIMIT 10
+          library: table
+          display:
+
+        superlative-most-relationships:
+          title: Most relationships (to other FDDs)
+          # Note: This query does not include relationships to other formats that are not described on the FDD site
+          db: fdd_database
+          query: >-
+            SELECT
+              '<a href="https://www.loc.gov/preservation/digital/formats/fdd/' || m.id || '.shtml">' || m.titleName || '</a>' as FDD,
+              count(*) as count
+            FROM
+              relationships r
+            INNER JOIN main m ON r.main_id = m.id WHERE m.id = r.main_id
+            GROUP BY
+              main_id
+            ORDER BY
+              count DESC
+            LIMIT 10
+          library: table
+          display:
+
+        superlative-oldest:
+          title: Oldest significant FDD update
+          db: fdd_database
+          query: >-
+            select date, '<a href="https://www.loc.gov/preservation/digital/formats/fdd/' || id || '.shtml">' || titleName || '</a>' as FDD  from main ORDER BY date ASC
+            LIMIT 10
+          library: table
+          display:
+          
+        superlative-newest:
+          title: Newest significant FDD update
+          db: fdd_database
+          query: >-
+            select date, '<a href="https://www.loc.gov/preservation/digital/formats/fdd/' || id || '.shtml">' || titleName || '</a>' as FDD from main ORDER BY date DESC
+            LIMIT 10
+          library: table
+          display:
+          
