@@ -2,6 +2,8 @@
 
 See the results live: [https://lc-sdf-data-exploration.fly.dev/](https://lc-sdf-data-exploration.fly.dev/)  
 
+Read a blog post about it: [Library of Congress Format Descriptions Visualization](https://bits.ashleyblewer.com/blog/2023/12/04/library-of-congress-format-description-visualization/)
+
 ![screenshot of datasette dashboard](dashboard.jpg)
 
 ## Contents
