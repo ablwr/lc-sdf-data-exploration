@@ -157,7 +157,7 @@ plugins:
         mentions-gary:
           title: Mentions Gary Kessler
           db: fdd_database
-          query: select count(*) as count, iif(signifiersGroup LIKE '%Gary Kessler%', 'Yes', 'No') as "Mentions Gary" from main group by "Mentions Gary" order by count
+          query: select count(*) as count, iif(signifiersGroup LIKE '%Gary Kessler%' or signifiersGroup LIKE '%GCK%', 'Yes', 'No') as "Mentions Gary" from main group by "Mentions Gary" order by count
           library: vega-lite
           display:
             mark: { type: arc, innerRadius: 0, tooltip: true }
