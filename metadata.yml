@@ -22,6 +22,7 @@ plugins:
         - [description-count, category, draftStatus, gdfrGenre]
         - [dates, dates, dates, keywords-cloud]
         - [gdfrBasis, gdfrConstraint, gdfrForm, gdfrComposition]
+        - [includes-pronom, includes-wikidata, includes-doctype, mentions-gary]
         - [superlative-most-citations, superlative-most-relationships, superlative-oldest, superlative-newest]
         - [superlative-most-citations, superlative-most-relationships, superlative-oldest, superlative-newest]
       # filters:
@@ -118,6 +119,50 @@ plugins:
             mark: { type: arc, tooltip: true }
             encoding:
               color: { field: gdfrConstraint, type: nominal }
+              theta: { field: count, type: quantitative }
+
+        includes-pronom:
+          title: Includes Pronom PUID
+          db: fdd_database
+          query: select count(*) as count, iif(signifiersGroup LIKE '%Pronom PUID%', 'Yes', 'No') as "Includes PUID" from main group by "Includes PUID" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Includes PUID", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        includes-wikidata:
+          title: Includes Wikidata Title ID
+          db: fdd_database
+          query: select count(*) as count, iif(signifiersGroup LIKE '%Wikidata Title ID%', 'Yes', 'No') as "Includes Wikidata" from main group by "Includes Wikidata" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Includes Wikidata", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        includes-doctype:
+          title: Includes XML DOCTYPE declaration
+          db: fdd_database
+          query: select count(*) as count, iif(signifiersGroup LIKE '%XML DOCTYPE declaration%', 'Yes', 'No') as "Includes DOCTYPE" from main group by "Includes DOCTYPE" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Includes DOCTYPE", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        mentions-gary:
+          title: Mentions Gary Kessler
+          db: fdd_database
+          query: select count(*) as count, iif(signifiersGroup LIKE '%Gary Kessler%', 'Yes', 'No') as "Mentions Gary" from main group by "Mentions Gary" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Mentions Gary", type: nominal }
               theta: { field: count, type: quantitative }
 
         dates:
