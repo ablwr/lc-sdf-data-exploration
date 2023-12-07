@@ -1,4 +1,5 @@
 import lxml.etree as ET
+from lxml.etree import tostring
 import os
 import sqlite3
 from uuid import uuid4
@@ -125,7 +126,7 @@ def insert_main_data(conn, data):
         data['description'],
         data['productionPhase'],
         data['shortDescription'],
-        " ".join(data['signifiersGroup'].split()),
+        data['signifiersGroup'],
         data['experience'],
         data['preference'],
         data['adoption'],
@@ -189,6 +190,9 @@ def or_blank(s):
 def or_blank_parsed(s):
     return "" if s is None else ''.join(s.itertext())
 
+def or_blank_xml(s):
+    return "" if s is None else ''.join(s.itertext())
+
 # Function to parse XML file and insert data into SQLite tables
 def parse_xml_file(xml_file_path):
     tree = ET.parse(xml_file_path)
@@ -212,7 +216,7 @@ def parse_xml_file(xml_file_path):
         'productionPhase': or_blank_parsed(root.find('.//fdd:productionPhase', namespaces=root.nsmap)),
         'shortDescription': or_blank_parsed(root.find('.//fdd:shortDescription', namespaces=root.nsmap)),
         # TODO may be better to break into subvalues / table.
-        'signifiersGroup': or_blank_parsed(root.find('.//fdd:signifiersGroup', namespaces=root.nsmap)),
+        'signifiersGroup': or_blank(root.find('.//fdd:signifiersGroup', namespaces=root.nsmap)),
         'experience': or_blank_parsed(root.find('.//fdd:experience', namespaces=root.nsmap)),
         'preference': or_blank_parsed(root.find('.//fdd:preference', namespaces=root.nsmap)),
         'adoption': or_blank_parsed(root.find('.//fdd:adoption', namespaces=root.nsmap)),
