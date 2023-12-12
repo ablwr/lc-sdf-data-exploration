@@ -1,5 +1,6 @@
 /fddXML/*
 /xml/*
 /venv/*
+/node_modules/*
 .dockerignore
 fly.toml
