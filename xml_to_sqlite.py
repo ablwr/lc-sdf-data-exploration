@@ -137,7 +137,7 @@ def insert_main_data(conn, data):
         data['selfDocumentation'],
         data['techProtection'],
         data['transparency'],
-        " ".join(data['qualityAndFunctionalityFactors'].split()),
+        data['qualityAndFunctionalityFactors'],
         data['general'],
         data['history']
     ))
@@ -191,7 +191,7 @@ def or_blank_parsed(s):
     return "" if s is None else ''.join(s.itertext())
 
 def or_blank_xml(s):
-    return "" if s is None else ''.join(s.itertext())
+    return "" if s is None else tostring(s, encoding="unicode", method="text")
 
 # Function to parse XML file and insert data into SQLite tables
 def parse_xml_file(xml_file_path):
@@ -216,7 +216,7 @@ def parse_xml_file(xml_file_path):
         'productionPhase': or_blank_parsed(root.find('.//fdd:productionPhase', namespaces=root.nsmap)),
         'shortDescription': or_blank_parsed(root.find('.//fdd:shortDescription', namespaces=root.nsmap)),
         # TODO may be better to break into subvalues / table.
-        'signifiersGroup': or_blank(root.find('.//fdd:signifiersGroup', namespaces=root.nsmap)),
+        'signifiersGroup': or_blank_xml(root.find('.//fdd:signifiersGroup', namespaces=root.nsmap)),
         'experience': or_blank_parsed(root.find('.//fdd:experience', namespaces=root.nsmap)),
         'preference': or_blank_parsed(root.find('.//fdd:preference', namespaces=root.nsmap)),
         'adoption': or_blank_parsed(root.find('.//fdd:adoption', namespaces=root.nsmap)),
@@ -228,7 +228,7 @@ def parse_xml_file(xml_file_path):
         'techProtection': or_blank_parsed(root.find('.//fdd:techProtection', namespaces=root.nsmap)),
         'transparency': or_blank_parsed(root.find('.//fdd:transparency', namespaces=root.nsmap)),
         # TODO for this one, too.
-        'qualityAndFunctionalityFactors': or_blank_parsed(root.find('.//fdd:qualityAndFunctionalityFactors', namespaces=root.nsmap)),
+        'qualityAndFunctionalityFactors': or_blank_xml(root.find('.//fdd:qualityAndFunctionalityFactors', namespaces=root.nsmap)),
         'general': or_blank_parsed(root.find('.//fdd:general', namespaces=root.nsmap)),
         'history': or_blank_parsed(root.find('.//fdd:history', namespaces=root.nsmap))
     }
