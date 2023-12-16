@@ -22,6 +22,7 @@ plugins:
         - [description-count, category, draftStatus, gdfrGenre]
         - [dates, dates, dates, keywords-cloud]
         - [gdfrBasis, gdfrConstraint, gdfrForm, gdfrComposition]
+        - [includes-ext, includes-magic, includes-mime, includes-uti]
         - [includes-pronom, includes-wikidata, includes-doctype, mentions-gary]
         - [superlative-most-citations, superlative-most-relationships, superlative-oldest, superlative-newest]
         - [superlative-most-citations, superlative-most-relationships, superlative-oldest, superlative-newest]
@@ -119,6 +120,50 @@ plugins:
             mark: { type: arc, tooltip: true }
             encoding:
               color: { field: gdfrConstraint, type: nominal }
+              theta: { field: count, type: quantitative }
+
+        includes-ext:
+          title: Includes ext
+          db: fdd_database
+          query: select count(*) as count, iif(cast(signifiersGroup as text) LIKE '%filenameExtension%', 'Yes', 'No') as "Includes ext" from main group by "Includes ext" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Includes ext", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        includes-mime:
+          title: Includes MIME
+          db: fdd_database
+          query: select count(*) as count, iif(cast(signifiersGroup as text) LIKE '%internetMediaType%', 'Yes', 'No') as "Includes MIME" from main group by "Includes MIME" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Includes MIME", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        includes-magic:
+          title: Includes magic numbers
+          db: fdd_database
+          query: select count(*) as count, iif(cast(signifiersGroup as text) LIKE '%magicNumbers%', 'Yes', 'No') as "Includes magic numbers" from main group by "Includes magic numbers" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Includes magic numbers", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        includes-uti:
+          title: Includes Uniform Type Identifier
+          db: fdd_database
+          query: select count(*) as count, iif(cast(signifiersGroup as text) LIKE '%Uniform Type Identifier (Mac OS)%', 'Yes', 'No') as "Includes UTI" from main group by "Includes UTI" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Includes UTI", type: nominal }
               theta: { field: count, type: quantitative }
 
         includes-pronom:
