@@ -123,7 +123,7 @@ plugins:
               theta: { field: count, type: quantitative }
 
         includes-ext:
-          title: Includes ext
+          title: Includes filename extension
           db: fdd_database
           query: select count(*) as count, iif(cast(signifiersGroup as text) LIKE '%filenameExtension%', 'Yes', 'No') as "Includes ext" from main group by "Includes ext" order by count
           library: vega-lite
