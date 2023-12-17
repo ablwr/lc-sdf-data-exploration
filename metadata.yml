@@ -22,8 +22,10 @@ plugins:
         - [description-count, category, draftStatus, gdfrGenre]
         - [dates, dates, dates, keywords-cloud]
         - [gdfrBasis, gdfrConstraint, gdfrForm, gdfrComposition]
-        - [includes-ext, includes-magic, includes-mime, includes-uti]
-        - [includes-pronom, includes-wikidata, includes-doctype, mentions-gary]
+        - [includes-pronom, includes-wikidata, includes-uti, mentions-gary]
+        - [includes-ext, includes-magic, includes-mime, has-otherQF]
+        - [has-stillImageQF, has-movingImageQF, has-soundQF, has-textQF]
+        - [has-webArchiveQF, has-datasetQF, has-gisQF, has-aggregateQF]
         - [superlative-most-citations, superlative-most-relationships, superlative-oldest, superlative-newest]
         - [superlative-most-citations, superlative-most-relationships, superlative-oldest, superlative-newest]
       # filters:
@@ -188,17 +190,6 @@ plugins:
               color: { field: "Includes Wikidata", type: nominal }
               theta: { field: count, type: quantitative }
 
-        includes-doctype:
-          title: Includes XML DOCTYPE declaration
-          db: fdd_database
-          query: select count(*) as count, iif(cast(signifiersGroup as text) LIKE '%XML DOCTYPE declaration%', 'Yes', 'No') as "Includes DOCTYPE" from main group by "Includes DOCTYPE" order by count
-          library: vega-lite
-          display:
-            mark: { type: arc, innerRadius: 0, tooltip: true }
-            encoding:
-              color: { field: "Includes DOCTYPE", type: nominal }
-              theta: { field: count, type: quantitative }
-
         mentions-gary:
           title: Mentions Gary Kessler
           db: fdd_database
@@ -208,6 +199,105 @@ plugins:
             mark: { type: arc, innerRadius: 0, tooltip: true }
             encoding:
               color: { field: "Mentions Gary", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        has-otherQF:
+          title: Has otherQF
+          db: fdd_database
+          query: select count(*) as count, iif(cast(qualityAndFunctionalityFactors as text) LIKE '%otherQF%', 'Yes', 'No') as "Has otherQF" from main group by "Has otherQF" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Has otherQF", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        has-stillImageQF:
+          title: Has stillImageQF
+          db: fdd_database
+          query: select count(*) as count, iif(cast(qualityAndFunctionalityFactors as text) LIKE '%stillImageQF%', 'Yes', 'No') as "Has stillImageQF" from main group by "Has stillImageQF" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Has stillImageQF", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        has-movingImageQF:
+          title: Has movingImageQF
+          db: fdd_database
+          query: select count(*) as count, iif(cast(qualityAndFunctionalityFactors as text) LIKE '%movingImageQF%', 'Yes', 'No') as "Has movingImageQF" from main group by "Has movingImageQF" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Has movingImageQF", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        has-soundQF:
+          title: Has soundQF
+          db: fdd_database
+          query: select count(*) as count, iif(cast(qualityAndFunctionalityFactors as text) LIKE '%soundQF%', 'Yes', 'No') as "Has soundQF" from main group by "Has soundQF" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Has soundQF", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        has-textQF:
+          title: Has textQF
+          db: fdd_database
+          query: select count(*) as count, iif(cast(qualityAndFunctionalityFactors as text) LIKE '%textQF%', 'Yes', 'No') as "Has textQF" from main group by "Has textQF" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Has textQF", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        has-webArchiveQF:
+          title: Has webArchiveQF
+          db: fdd_database
+          query: select count(*) as count, iif(cast(qualityAndFunctionalityFactors as text) LIKE '%webArchiveQF%', 'Yes', 'No') as "Has webArchiveQF" from main group by "Has webArchiveQF" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Has webArchiveQF", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        has-datasetQF:
+          title: Has datasetQF
+          db: fdd_database
+          query: select count(*) as count, iif(cast(qualityAndFunctionalityFactors as text) LIKE '%datasetQF%', 'Yes', 'No') as "Has datasetQF" from main group by "Has datasetQF" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Has datasetQF", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        has-gisQF:
+          title: Has gisQF
+          db: fdd_database
+          query: select count(*) as count, iif(cast(qualityAndFunctionalityFactors as text) LIKE '%gisQF%', 'Yes', 'No') as "Has gisQF" from main group by "Has gisQF" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Has gisQF", type: nominal }
+              theta: { field: count, type: quantitative }
+
+        has-aggregateQF:
+          title: Has aggregateQF
+          db: fdd_database
+          query: select count(*) as count, iif(cast(qualityAndFunctionalityFactors as text) LIKE '%aggregateQF%', 'Yes', 'No') as "Has aggregateQF" from main group by "Has aggregateQF" order by count
+          library: vega-lite
+          display:
+            mark: { type: arc, innerRadius: 0, tooltip: true }
+            encoding:
+              color: { field: "Has aggregateQF", type: nominal }
               theta: { field: count, type: quantitative }
 
         dates:
