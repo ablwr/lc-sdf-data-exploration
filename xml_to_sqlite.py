@@ -191,7 +191,7 @@ def or_blank_parsed(s):
     return "" if s is None else ''.join(s.itertext())
 
 def or_blank_xml(s):
-    return "" if s is None else tostring(s, encoding="unicode", method="text")
+    return "" if s is None else tostring(s, encoding="unicode")
 
 # Function to parse XML file and insert data into SQLite tables
 def parse_xml_file(xml_file_path):
